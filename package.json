@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "ts-node-dev --respawn --transpileOnly ./index.ts",
-    "listen": "nodemon ./main/src/app.ts",
+    "listen": "nodemon ./Susana/src/app.ts",
     "generate": "npx ts-node scripts/generateUser.ts",
     "generate-large": "npx ts-node scripts/generateUser.ts 50000",
     "exercises": "node exercises/streams-performance.js",
