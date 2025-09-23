@@ -8,7 +8,7 @@
   {
     "id": 2,
     "book_id": 1,
-    "condition": "worn",
+    "condition": "used",
     "availability_status": "borrowed"
   }
 ]

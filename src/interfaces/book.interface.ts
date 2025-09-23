@@ -1,6 +1,13 @@
 export interface IBook {
     id: string
+    title: string,
     author: string,
-    name: string,
-    ouwner: string
+    isbn?: string,
+    genre: string,
+    language: string,
+    cover_url: string,
+    description: string,
+    ouwner_id: number,
+    status: 'available' | 'borrowed' | 'inactive'
+    created_at: Date
 }
