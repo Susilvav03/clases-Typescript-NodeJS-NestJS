@@ -1,12 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "Basic",
-    "price": 9.99,
-    "max_books_per_month": 3,
-    "description": "Basic plan with access to 3 books per month."
-  },
-  {
     "id": 2,
     "name": "Standard",
     "price": 14.99,
@@ -19,5 +12,12 @@
     "price": 19.99,
     "max_books_per_month": 10,
     "description": "Premium plan with access to 10 books per month."
+  },
+  {
+    "id": 1,
+    "name": "Basic",
+    "price": 9.99,
+    "max_books_per_month": 2,
+    "description": "Basic plan with access to 2 books per month."
   }
 ]
