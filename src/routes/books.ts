@@ -1,5 +1,6 @@
 import { Router, type Request, type Response } from "express";
 import { getBook, getBooks, createBook, deleteBook, updateBook} from "../controllers/books.controller.ts";
+import { checkPermissions } from "../middlewares/auth.validator.ts";
 
 const router:Router = Router();
 
@@ -13,7 +14,7 @@ router.get('/', (req:Request, res:Response) => {
     getBooks(req, res);
 });
 
-router.post('/', (req: Request, res: Response) => {
+router.post('/', checkPermissions, (req: Request, res: Response) => {
   console.log('Creating Book');
   createBook(req, res);
 });

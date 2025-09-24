@@ -10,7 +10,8 @@
     "description": "Una obra maestra de la literatura latinoamericana.",
     "owner_id": 1,
     "status": "available",
-    "created_at": "2025-09-05T09:00:00Z"
+    "created_at": "2025-09-05T09:00:00Z",
+    "created_by": 2
   },
   {
     "id": 2,
@@ -23,6 +24,7 @@
     "description": "Un clásico sobre el control totalitario.",
     "owner_id": 2,
     "status": "borrowed",
-    "created_at": "2025-08-20T11:00:00Z"
+    "created_at": "2025-08-20T11:00:00Z",
+    "created_by": 2
   }
 ]

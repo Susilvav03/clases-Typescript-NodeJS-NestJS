@@ -9,5 +9,6 @@ export interface IBook {
     description: string,
     ouwner_id: number,
     status: 'available' | 'borrowed' | 'inactive'
-    created_at: Date
+    created_at: Date,
+    created_by: number
 }
