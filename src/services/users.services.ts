@@ -10,7 +10,7 @@ const filepath = join(__dirname, "../models/users.model.json")
 const getUserService = async (id: number): Promise<IUser|null> => {
     const data = await fs.readFile(filepath, "utf-8")
     const users: IUser[] = JSON.parse(data) as IUser[]
-    const user = users.find(user => user.id === id) || null
+    const user = users.find(user => user.id == id) || null
     return user
 }
 
@@ -31,7 +31,7 @@ const createUserService = async (user: IUser): Promise<IUser> => {
 const updateUserService = async (id: number, user: IUser): Promise<IUser|null> => {
     const data = await fs.readFile(filepath, "utf-8")
     const users: IUser[] = JSON.parse(data) as IUser[]
-    const index = users.findIndex(user => user.id === id)
+    const index = users.findIndex(user => user.id == id)
     if (index === -1) return null
     users[index] = user
     await fs.writeFile(filepath, JSON.stringify(users, null, 2))
@@ -41,7 +41,7 @@ const updateUserService = async (id: number, user: IUser): Promise<IUser|null> =
 const deleteUserService = async (id: number): Promise<void> => {
     const data = await fs.readFile(filepath, "utf-8")
     const users: IUser[] = JSON.parse(data) as IUser[]
-    const filteredUsers = users.filter(user => user.id !== id)
+    const filteredUsers = users.filter(user => user.id != id)
     await fs.writeFile(filepath, JSON.stringify(filteredUsers, null, 2))
 }
 
