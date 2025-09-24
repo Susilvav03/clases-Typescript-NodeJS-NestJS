@@ -69,7 +69,7 @@ const deleteUser = (req: Request<{ id: number }>, res: Response) => {
         })
 
     }catch(err){
-        handleHttp(res, "ERROR_DELETE_BOOK", statusCode, err);
+        handleHttp(res, "ERROR_DELETE_USER", statusCode, err);
     }
 }
 
