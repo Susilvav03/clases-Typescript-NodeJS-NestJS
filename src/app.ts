@@ -33,18 +33,12 @@ app.use(router);
 app.use((_req, res) => res.status(404).json({ error: 'Not Found' })); 
 app.use(errorMiddleware);                                     
 
-async function bootstrap() {                                  
-  await initDB();                                             
+                                 
+await initDB();                                             
+await sequelize.sync({ alter: false }); // Sync models with alter false because we use migrations
 
-  await sequelize.sync({ alter: false }); // Sync models with alter false because we use migrations
-
-  // Start server
-  app.listen(ENV.PORT, () => {                                
-    console.log(`🚀 Server on http://localhost:${ENV.PORT}`);
-  });
-}
-
-bootstrap().catch((e) => {                                    
-  console.error('Fatal start error:', e);
-  process.exit(1);
+// Start server
+app.listen(ENV.PORT, () => {                                
+  console.log(`🚀 Server on http://localhost:${ENV.PORT}`);
 });
+
