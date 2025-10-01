@@ -2,67 +2,74 @@ import { DataTypes, Model, type CreationOptional, type InferAttributes, type Inf
 import { sequelize } from '../config/database.ts';          
 
 
-export class User extends Model<
-  InferAttributes<User>,             // Existing attributes in the instance
-  InferCreationAttributes<User>      // Attributes needed to create a new instance
+export class Book extends Model<
+  InferAttributes<Book>,             // Existing attributes in the instance
+  InferCreationAttributes<Book>      // Attributes needed to create a new instance
 > {
   declare id: CreationOptional<number>; // SERIAL → autoincrement (
-  declare name: string;                                  
-  declare lastName: string;                              
-  declare email: string; // UNIQUE NOT NULL
-  declare passwordHash: string;                          
-  declare phone: string | null;  // Nullable
-  declare address: string | null; // Nullable
-  declare role: CreationOptional<string>; // DEFAULT 'user' 
+  declare title: string;                                  
+  declare author: string;                              
+  declare isbn: string | null;
+  declare genre: string | null;                          
+  declare language: string| null;
+  declare coverURL: string | null; // Nullable
+  declare description: string | null;
+  declare ownerId: number; // Foreign key to users table
+  declare status: CreationOptional<string>; // DEFAULT 'available'
   declare createdAt: CreationOptional<Date>;  // Map created_at
   declare updatedAt: CreationOptional<Date>;  // Map updated_at
 }
 
 // Intitialization: define table and columns
-User.init(
+Book.init(
   {
     id: {
       type: DataTypes.INTEGER,                           // SERIAL → INTEGER
       autoIncrement: true,                               // Autoincrement
       primaryKey: true,                                  // PRIMARY KEY
     },
-    name: {
+    title: {
       type: DataTypes.STRING(100),                       // VARCHAR(100)
       allowNull: false,                                  // NOT NULL
-      field: 'name',                                     // Name of column in DB
+      field: 'title',                                    // Name of column in DB
     },
-    lastName: {
+    author: {
       type: DataTypes.STRING(100),                       // VARCHAR(100)
       allowNull: false,                                  // NOT NULL
-      field: 'last_name',                                // Map camelCase → snake_case
+      field: 'author',                                   // Map camelCase → snake_case
     },
-    email: {
+    isbn: {
       type: DataTypes.STRING(150),                       // VARCHAR(150)
-      allowNull: false,                                  // NOT NULL
       unique: true,                                      // UNIQUE (reflects constraint SQL)
-      field: 'email',                                    // Name of column in DB
-      validate: { isEmail: true },                       
+      field: 'isbn',                                     // Name of column in DB
     },
-    passwordHash: {
+    genre: {
       type: DataTypes.TEXT,                              // TEXT
       allowNull: false,                                  // NOT NULL
-      field: 'password_hash',                            // Name of column in DB
+      field: 'genre',                                    // Name of column in DB
     },
-    phone: {
-      type: DataTypes.STRING(20),                        // VARCHAR(20)
-      allowNull: true,                                   // Nullable
-      field: 'phone',                                    // Name of column in DB
+    language: {
+      type: DataTypes.STRING(50),                        // VARCHAR(20)
+      field: 'language',                                 // Name of column in DB
     },
-    address: {
+    coverURL: {
       type: DataTypes.TEXT,                              // TEXT
-      allowNull: true,                                   // Nullable
-      field: 'address',                                  // Name of column in DB
+      field: 'cover_url',                                // Name of column in DB
     },
-    role: {
-      type: DataTypes.STRING(20),                        // VARCHAR(20)
+    description: {
+      type: DataTypes.TEXT,                              // VARCHAR(20)
+      field: 'description',                              // Name of column in DB
+    },
+    ownerId: {
+      type: DataTypes.INTEGER,                           // VARCHAR(20)
       allowNull: false,                                  // Not null because there is a DEFAULT
-      defaultValue: 'user',                              // DEFAULT 'user'
-      field: 'role',                                     // Name of column in DB
+      field: 'owner_id',                                 // Name of column in DB
+    },
+    status: {
+      type: DataTypes.STRING(150),                       // VARCHAR(20)
+      allowNull: false,                                  // Not null because there is a DEFAULT
+      defaultValue: 'Available',                         // DEFAULT 'user'
+      field: 'status',                                     // Name of column in DB
     },
     createdAt: {
       type: DataTypes.DATE,                              // TIMESTAMP

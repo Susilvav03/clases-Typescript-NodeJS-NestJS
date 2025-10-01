@@ -1,25 +1,25 @@
 import express from 'express'                                
 import { ENV } from './config/env.ts'                           
 import { initDB, sequelize } from './config/database.ts'      
-import { router, initRoutes } from './routes/main.ts'               
+import router from './routes/main.ts'               
 import { errorMiddleware } from './middlewares/error.middleware.ts' 
 import cors from 'cors'
 import './models/users.model.ts'                                 
 
 const app = express();   
 
-const whitelist = ['http://localhost:5173/'];
-const corsOptions = {
-  origin: (origin:any, callback:any) => {
-    if (whitelist.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
-};
+// const whitelist = ['http://localhost:5173/'];
+// const corsOptions = {
+//   origin: (origin:any, callback:any) => {
+//     if (whitelist.includes(origin) || !origin) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   }
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use(express.json());          
 
@@ -27,8 +27,7 @@ app.use(express.json());
 app.get('/health', (_req, res) => res.json({ ok: true }));    
 
 // Initialize routes
-await initRoutes();
-app.use(router);                  
+app.use("/api", router);                  
 
 app.use((_req, res) => res.status(404).json({ error: 'Not Found' })); 
 app.use(errorMiddleware);                                     

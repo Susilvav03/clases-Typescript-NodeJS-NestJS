@@ -11,7 +11,7 @@ export const sequelize = new Sequelize(
     host: ENV.DB_HOST,
     port: ENV.DB_PORT,
     dialect: 'postgres'
-}
+  } 
 )
 
 export async function initDB() {

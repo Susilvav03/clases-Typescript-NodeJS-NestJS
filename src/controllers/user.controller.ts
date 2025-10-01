@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'       
 import { createUser, listUsers, getUserById, updateUser, deleteUser } from '../services/user.service.ts'
+import { log } from 'console';
 
 // Controller to handle user creation
 export async function createUserController(req: Request, res: Response) {
@@ -9,8 +10,10 @@ export async function createUserController(req: Request, res: Response) {
 
 // Controller to list all users
 export async function listUsersController(_req: Request, res: Response) {
-  const users = await listUsers();                           
-  return res.json(users);                                   
+  const users = await listUsers();  
+  log(users);                         
+  return res.json(users); 
+
 }
 
 // Controller to get a user by ID
