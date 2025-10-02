@@ -18,9 +18,3 @@ export function requireCreateUserBody(req: Request, res: Response, next: NextFun
 
   next();                                                       
 }
-
-/*
-declare title: string;                                  
-declare author: string; 
-
-*/
