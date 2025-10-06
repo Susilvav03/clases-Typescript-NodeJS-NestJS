@@ -1,51 +1,21 @@
-import { DataTypes, Model, type CreationOptional, type InferAttributes, type InferCreationAttributes } from 'sequelize';                                      
-import { sequelize } from '../config/database.ts';          
+import { DataTypes, Model, type InferAttributes, type InferCreationAttributes, type CreationOptional } from 'sequelize';
+import { sequelize } from '../config/database.ts';
 
-
-export class Product extends Model<
-  InferAttributes<Product>,             // Existing attributes in the instance
-  InferCreationAttributes<Product>      // Attributes needed to create a new instance
-> {
-  declare id: CreationOptional<number>; // SERIAL → autoincrement (
-  declare name: string; 
-  declare price: number; 
-  declare category: string; // DEFAULT 'pendiente'
-  declare createdAt: CreationOptional<Date>;  // Map created_at
+export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
+  declare id: CreationOptional<number>;
+  declare nombre: string;
+  declare precio: string;          
+  declare categoria: string;
+  declare created_at: CreationOptional<Date>;
 }
 
-// Intitialization: define table and columns
 Product.init(
   {
-    id: {
-      type: DataTypes.INTEGER,                           // SERIAL → INTEGER
-      autoIncrement: true,                               // Autoincrement
-      primaryKey: true,                                  // PRIMARY KEY
-    },
-    name: {
-      type: DataTypes.STRING(100),                       // VARCHAR(100)
-      allowNull: false,                                  // NOT NULL
-      field: 'nombre',                                   // Name of column in DB
-    },
-    price: {
-      type: DataTypes.INTEGER,                           
-      allowNull: false,                                  
-      field: 'precio',                                   // Name of column in DB
-    },
-    category: {
-      type: DataTypes.STRING(150),                       // VARCHAR(150)
-      allowNull: false,                                  // Not null because there is a DEFAULT
-      field: 'categoria',                                // Name of column in DB
-    },
-    createdAt: {
-      type: DataTypes.DATE,                              // TIMESTAMP
-      allowNull: false,                                  // NOT NULL (tiene DEFAULT en SQL)
-      field: 'created_at',                               // Name of column in DB
-    }
+    id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true },
+    nombre: { type: DataTypes.STRING(120), allowNull: false },
+    precio: { type: DataTypes.DECIMAL(12, 2), allowNull: false },
+    categoria: { type: DataTypes.STRING(60), allowNull: false },
+    created_at: { type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW },
   },
-  {
-    sequelize,                                           
-    tableName: 'productos',                              // Name of table in DB
-    timestamps: true,                                    // Activates createdAt
-    freezeTableName: true,                               // Avoid plural table names
-  }
+  { sequelize, tableName: 'productos', timestamps: false, freezeTableName: true }
 );
