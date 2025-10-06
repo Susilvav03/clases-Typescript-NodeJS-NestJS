@@ -10,11 +10,7 @@ export type CreateOrderData = {
   items: OrderItemInput[];
 }
 
-export type UpdateOrderData = Partial<{
-  usuario_id: number;
-  estado: 'pendiente' | 'preparando' | 'entregado';
-  fecha: Date | string;
-}>
+export type UpdateOrderData = Partial<CreateOrderData>
 
 export function listOrders() {
   return Order.findAll({ order: [['id', 'ASC']] })
@@ -65,7 +61,7 @@ export async function deleteOrder(id: number) {
   return true
 }
 
-/** ii) Pedidos filtrados por estado (Op.in) */
+// Pedidos filtrados por estado (Op.in)
 export function filterOrdersByEstado(estados: Array<'pendiente' | 'preparando' | 'entregado'>) {
   return Order.findAll({
     where: { estado: { [Op.in]: estados } },
@@ -73,7 +69,7 @@ export function filterOrdersByEstado(estados: Array<'pendiente' | 'preparando' |
   })
 }
 
-/** iii) Pedidos con fecha > dada (Op.gt) */
+// Pedidos con fecha > dada (Op.gt)
 export function listOrdersAfterDate(date: Date | string) {
   return Order.findAll({
     where: { fecha: { [Op.gt]: new Date(date) } },
