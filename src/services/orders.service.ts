@@ -1,71 +1,97 @@
-import { Plan } from '../models/index.ts'   
-import { Op } from 'sequelize'
+import { sequelize, Order, OrderProduct, Product } from '../models/index.ts'
+import { Op, Transaction, fn, literal } from 'sequelize'
 
-// Types for Plan creation and update
-export type CreatePlanData = {
-  name: string;
-  price: number;
-  maxBooks: number;
-  description?: string | null;
+export type OrderItemInput = { producto_id: number; cantidad: number }
+
+export type CreateOrderData = {
+  usuario_id: number;
+  estado?: 'pendiente' | 'preparando' | 'entregado';
+  fecha?: Date | string;
+  items: OrderItemInput[];
 }
 
-export type UpdatePlanData = Partial<CreatePlanData>    
+export type UpdateOrderData = Partial<{
+  usuario_id: number;
+  estado: 'pendiente' | 'preparando' | 'entregado';
+  fecha: Date | string;
+}>
 
-
-// Create a new Plan
-export function createPlan(data: CreatePlanData) {       
-  return Plan.create(data)
+export function listOrders() {
+  return Order.findAll({ order: [['id', 'ASC']] })
 }
 
-// List all, ordered by id ascending
-export function listPlans() {                            
-  return Plan.findAll({ order: [['id', 'ASC']] })
+export function getOrderById(id: number) {
+  return Order.findByPk(id)
 }
 
-// Search by primary key (id)
-export function getPlanById(id: number) {                
-  return Plan.findByPk(id)
-}
+export async function createOrder(data: CreateOrderData) {
+  return sequelize.transaction(async (t: Transaction) => {
+    const order = await Order.create(
+      {
+        usuario_id: data.usuario_id,
+        estado: data.estado ?? 'pendiente',
+        fecha: data.fecha ? new Date(data.fecha) : new Date(),
+      },
+      { transaction: t }
+    )
 
-// Search by unique email
-export function getPlanByEmail(name: string) {          
-  return Plan.findOne({ where: { name } })
-}
-
-// Update only fields present in 'data'
-export async function updatePlan(id: number, data: UpdatePlanData) { 
-  const plan = await Plan.findByPk(id)
-  if (!plan) return null 
-  await plan.update(data)
-  return plan                        
-}
-
-// Delete by primary key (id)
-export async function deletePlan(id: number) {           
-  const plan = await Plan.findByPk(id)                  
-  if (!plan) return false                               
-  await plan.destroy() // delete from db
-  return true                                           
-}
-
-
-// Search Plans with price greater than 20
-export function findExpensivePlans() {
-  return Plan.findAll({
-    where: { price: { [Op.gt]: 20 } }
+    if (data.items?.length) {
+      await OrderProduct.bulkCreate(
+        data.items.map(i => ({
+          pedido_id: order.id,
+          producto_id: i.producto_id,
+          cantidad: i.cantidad,
+        })),
+        { transaction: t }
+      )
+    }
+    return order
   })
 }
 
-// Search Plans with maxBooks less than or equal to 5
-export function findBasicPlans() {
-  return Plan.findAll({
-    where: { maxBooks: { [Op.lte]: 5 } }
+export async function updateOrder(id: number, data: UpdateOrderData) {
+  const row = await Order.findByPk(id)
+  if (!row) return null
+  const payload: any = { ...data }
+  if (data.fecha) payload.fecha = new Date(data.fecha)
+  await row.update(payload)
+  return row
+}
+
+export async function deleteOrder(id: number) {
+  const row = await Order.findByPk(id)
+  if (!row) return false
+  await row.destroy()
+  return true
+}
+
+/** ii) Pedidos filtrados por estado (Op.in) */
+export function filterOrdersByEstado(estados: Array<'pendiente' | 'preparando' | 'entregado'>) {
+  return Order.findAll({
+    where: { estado: { [Op.in]: estados } },
+    order: [['id', 'ASC']],
   })
 }
 
-// Search Plans created after January 1, 2025
-export function findPlansCreatedAfter() {
-  return Plan.findAll({
-    where: { createdAt: { [Op.gt]: new Date('2025-01-01') } }
+/** iii) Pedidos con fecha > dada (Op.gt) */
+export function listOrdersAfterDate(date: Date | string) {
+  return Order.findAll({
+    where: { fecha: { [Op.gt]: new Date(date) } },
+    order: [['fecha', 'ASC']],
   })
+}
+
+
+// Calcular total de un pedido (SUM(cantidad * precio)) 
+export async function getOrderTotal(pedidoId: number) {
+  const row = await OrderProduct.findOne({
+    where: { pedido_id: pedidoId },
+    include: [{ model: Product, as: 'producto', attributes: [] }],
+    attributes: [
+      [fn('SUM', literal('"pedido_productos"."cantidad" * "producto"."precio"')), 'total']
+    ],
+  })
+
+  const total = (row?.get('total') as string | null) ?? '0.00'
+  return { pedido_id: pedidoId, total }
 }

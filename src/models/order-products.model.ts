@@ -1,7 +1,10 @@
 import { DataTypes, Model, type InferAttributes, type InferCreationAttributes } from 'sequelize';
 import { sequelize } from '../config/database.ts';
 
-export class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCreationAttributes<OrderProduct>> {
+export class OrderProduct extends Model
+<InferAttributes<OrderProduct>, 
+InferCreationAttributes<OrderProduct>> 
+{
   declare pedido_id: number;
   declare producto_id: number;
   declare cantidad: number;
@@ -9,9 +12,25 @@ export class OrderProduct extends Model<InferAttributes<OrderProduct>, InferCrea
 
 OrderProduct.init(
   {
-    pedido_id: { type: DataTypes.BIGINT, primaryKey: true, allowNull: false },
-    producto_id: { type: DataTypes.BIGINT, primaryKey: true, allowNull: false },
-    cantidad: { type: DataTypes.INTEGER, allowNull: false },
+    pedido_id: { 
+      type: DataTypes.BIGINT, 
+      primaryKey: true, 
+      allowNull: false 
+    },
+    producto_id: { 
+      type: DataTypes.BIGINT, 
+      primaryKey: true, 
+      allowNull: false 
+    },
+    cantidad: { 
+      type: DataTypes.INTEGER, 
+      allowNull: false,
+      validate: { min: 1 }
+    },
   },
-  { sequelize, tableName: 'pedido_productos', timestamps: false, freezeTableName: true }
+  { 
+    sequelize, 
+    tableName: 'pedido_productos', 
+    timestamps: false, 
+    freezeTableName: true }
 );
