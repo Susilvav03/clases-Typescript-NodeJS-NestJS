@@ -1,5 +1,5 @@
 import { Router } from 'express';                             
-import { createPlanController, listPlansController, getPlanController, updatePlanController, deletePlanController, listExpensivePlansController, listBasicPlansController } from '../controllers/plan.controller.ts';                      
+import { createPlanController, listPlansController, getPlanController, updatePlanController, deletePlanController, listExpensivePlansController, listBasicPlansController } from '../controllers/order.controller.ts';                      
 
 import { requireCreatePlanBody } from '../middlewares/require-create-plan.middleware.ts';      
 

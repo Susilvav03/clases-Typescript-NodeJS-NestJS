@@ -1,85 +1,82 @@
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    phone VARCHAR(20),
-    address TEXT,
-    role VARCHAR(20) DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+-- Reinicio seguro del esquema
+DROP TABLE IF EXISTS pedido_productos CASCADE;
+DROP TABLE IF EXISTS pedidos CASCADE;
+DROP TABLE IF EXISTS productos CASCADE;
+DROP TABLE IF EXISTS usuarios CASCADE;
+
+DROP TYPE IF EXISTS rol_usuario_enum CASCADE;
+DROP TYPE IF EXISTS estado_pedido_enum CASCADE;
+
+-- Tipos ENUM
+CREATE TYPE rol_usuario_enum AS ENUM ('admin', 'cliente');
+CREATE TYPE estado_pedido_enum AS ENUM ('pendiente', 'preparando', 'entregado');
+
+-- Tablas
+
+-- a) Usuario
+CREATE TABLE usuarios (
+  id            BIGSERIAL PRIMARY KEY,
+  nombre        VARCHAR(100) NOT NULL,
+  email         VARCHAR(150) NOT NULL UNIQUE,
+  rol           rol_usuario_enum NOT NULL DEFAULT 'cliente',
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-
-CREATE TABLE plans (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    price NUMERIC(10,2) NOT NULL,
-    max_books_per_month INT NOT NULL,
-    description TEXT
+-- b) Producto
+CREATE TABLE productos (
+  id            BIGSERIAL PRIMARY KEY,
+  nombre        VARCHAR(120) NOT NULL,
+  precio        NUMERIC(12,2) NOT NULL CHECK (precio >= 0),
+  categoria     VARCHAR(60)  NOT NULL,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-
-CREATE TABLE subscriptions (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    plan_id INT REFERENCES plans(id) ON DELETE CASCADE,
-    start_date DATE NOT NULL,
-    end_date DATE,
-    status VARCHAR(20) CHECK (status IN ('active','expired','canceled')) NOT NULL
+-- c) Pedido
+CREATE TABLE pedidos (
+  id            BIGSERIAL PRIMARY KEY,
+  fecha         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  estado        estado_pedido_enum NOT NULL DEFAULT 'pendiente',
+  usuario_id    BIGINT NOT NULL REFERENCES usuarios(id) ON DELETE RESTRICT
 );
 
-
-CREATE TABLE books (
-    id SERIAL PRIMARY KEY,
-    title VARCHAR(200) NOT NULL,
-    author VARCHAR(150) NOT NULL,
-    isbn VARCHAR(50),
-    genre VARCHAR(100),
-    language VARCHAR(50),
-    cover_url TEXT,
-    description TEXT,
-    owner_id INT REFERENCES users(id) ON DELETE CASCADE,
-    status VARCHAR(20) CHECK (status IN ('available','borrowed','inactive')) DEFAULT 'available',
-    created_at TIMESTAMP DEFAULT NOW()
+-- d) PedidoProducto (N:M)
+CREATE TABLE pedido_productos (
+  pedido_id       BIGINT NOT NULL REFERENCES pedidos(id) ON DELETE CASCADE,
+  producto_id     BIGINT NOT NULL REFERENCES productos(id) ON DELETE RESTRICT,
+  cantidad        INTEGER NOT NULL CHECK (cantidad > 0),
+  PRIMARY KEY (pedido_id, producto_id)
 );
 
+-- Datos de prueba
 
-CREATE TABLE book_copies (
-    id SERIAL PRIMARY KEY,
-    book_id INT REFERENCES books(id) ON DELETE CASCADE,
-    condition VARCHAR(20) CHECK (condition IN ('new','good','worn')) NOT NULL,
-    availability_status BOOLEAN DEFAULT TRUE
-);
+-- Usuarios
+INSERT INTO usuarios (nombre, email, rol) VALUES
+  ('Ana Gómez',      'ana@example.com',   'admin'),
+  ('Carlos Pérez',   'carlos@example.com','cliente'),
+  ('Lucía Rojas',    'lucia@example.com', 'cliente');
+
+-- Productos
+INSERT INTO productos (nombre, precio, categoria) VALUES
+  ('Café Molido 500g',      25000.00, 'Alimentos'),
+  ('Té Verde 20 sobres',     12000.00, 'Alimentos'),
+  ('Botella Térmica 750ml',  55000.00, 'Accesorios'),
+  ('Cuaderno A5 100h',        9000.00, 'Papelería'),
+  ('Bolígrafo Gel Negro',      3500.00, 'Papelería');
+
+-- Pedidos (usuario_id debe existir en usuarios)
+INSERT INTO pedidos (fecha, estado, usuario_id) VALUES
+  (NOW() - INTERVAL '3 days', 'pendiente', 2),
+  (NOW() - INTERVAL '2 days', 'preparando', 3),
+  (NOW() - INTERVAL '7 days', 'entregado', 2);
+
+-- PedidoProducto (pedido_id y producto_id deben existir)
+INSERT INTO pedido_productos (pedido_id, producto_id, cantidad) VALUES
+  (1, 1, 2),  -- Pedido 1: 2 unidades del producto 1
+  (1, 3, 1),  -- Pedido 1: 1 unidad del producto 3
+  (2, 2, 3),  -- Pedido 2: 3 unidades del producto 2
+  (2, 5, 4),  -- Pedido 2: 4 unidades del producto 5
+  (3, 1, 1),  -- Pedido 3: 1 unidad del producto 1
+  (3, 4, 2);  -- Pedido 3: 2 unidades del producto 4
 
 
-CREATE TABLE loans (
-    id SERIAL PRIMARY KEY,
-    book_id INT REFERENCES books(id) ON DELETE CASCADE,
-    borrower_id INT REFERENCES users(id),
-    owner_id INT REFERENCES users(id),
-    loan_date DATE NOT NULL DEFAULT CURRENT_DATE,
-    return_date DATE,
-    actual_return_date DATE,
-    status VARCHAR(20) CHECK (status IN ('active','returned','late','canceled')) DEFAULT 'active'
-);
 
-
-CREATE TABLE reviews (
-    id SERIAL PRIMARY KEY,
-    book_id INT REFERENCES books(id) ON DELETE CASCADE,
-    reviewer_id INT REFERENCES users(id),
-    rating INT CHECK (rating >= 1 AND rating <= 5) NOT NULL,
-    comment TEXT,
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE notifications (
-    id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES users(id) ON DELETE CASCADE,
-    type VARCHAR(50) NOT NULL,
-    message TEXT NOT NULL,
-    read BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT NOW()
-);

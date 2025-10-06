@@ -4,7 +4,7 @@ import { initDB, sequelize } from './config/database.ts'
 import router from './routes/main.ts'               
 import { errorMiddleware } from './middlewares/error.middleware.ts' 
 import cors from 'cors'
-import './models/users.model.ts'                                 
+import './models/user.model.ts'                                 
 
 const app = express();   
 

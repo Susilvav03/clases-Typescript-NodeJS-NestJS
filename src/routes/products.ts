@@ -1,5 +1,5 @@
 import { Router } from 'express';                             
-import { createBookController, listBooksController, getBookController, updateBookController, deleteBookController } from '../controllers/book.controller.ts';                      
+import { createBookController, listBooksController, getBookController, updateBookController, deleteBookController } from '../controllers/product.controller.ts';                      
 import { requireCreateBookBody } from '../middlewares/require-create-book.middleware.ts';
 
 const bookRouter = Router();                                      

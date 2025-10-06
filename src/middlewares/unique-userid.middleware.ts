@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'; 
-import { getUserById } from '../services/user.service.ts'; 
+import { getUserById } from '../services/users.service.ts'; 
 
 // Middleware to ensure UserId uniqueness on create and update
 export async function ensureUniqueUserId(req: Request, res: Response, next: NextFunction) {

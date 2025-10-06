@@ -1,4 +1,3 @@
-export { User } from './users.model.ts';      
-export { Book } from './books.model.ts';   
-export { Plan } from './plans.model.ts';           
-export { Subscription } from './subscriptions.model.ts'; 
+export { User } from './user.model.ts';      
+export { Product } from './product.model.ts';   
+export { Plan } from './order.model.ts';           

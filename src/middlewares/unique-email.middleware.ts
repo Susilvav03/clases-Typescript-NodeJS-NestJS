@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express'; 
-import { getUserByEmail } from '../services/user.service.ts'; 
+import { getUserByEmail } from '../services/users.service.ts'; 
 
 // Middleware to ensure email uniqueness on create and update
 export async function ensureUniqueEmail(req: Request, res: Response, next: NextFunction) {

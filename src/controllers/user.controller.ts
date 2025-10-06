@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'       
-import { createUser, listUsers, getUserById, updateUser, deleteUser } from '../services/user.service.ts'
+import { createUser, listUsers, getUserById, updateUser, deleteUser } from '../services/users.service.ts'
 import { log } from 'console';
 
 // Controller to handle user creation

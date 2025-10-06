@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'       
-import { createPlan, listPlans, getPlanById, updatePlan, deletePlan, findBasicPlans, findExpensivePlans } from '../services/plan.service.ts'
+import { createPlan, listPlans, getPlanById, updatePlan, deletePlan, findBasicPlans, findExpensivePlans } from '../services/orders.service.ts'
 import { log } from 'console';
 
 // Controller to handle Plan creation

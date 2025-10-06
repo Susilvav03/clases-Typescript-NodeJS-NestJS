@@ -1,6 +1,5 @@
-import bookRouter from "./books.ts";
-import planRouter from "./plans.ts";
-import subscriptionRouter from "./subscriptions.ts";
+import bookRouter from "./products.ts";
+import planRouter from "./orders.ts";
 import userRouter from "./users.ts";
 
 
@@ -9,8 +8,7 @@ import { Router } from "express";
 const router = Router();
 
 router.use('/users', userRouter);
-router.use('/books', bookRouter);
-router.use('/plans', planRouter);
-router.use('/subscriptions', subscriptionRouter);
+router.use('/products', bookRouter);
+router.use('/orders', planRouter);
 
 export default router;

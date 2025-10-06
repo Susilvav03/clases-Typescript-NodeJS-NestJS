@@ -7,15 +7,10 @@ export class User extends Model<
   InferCreationAttributes<User>      // Attributes needed to create a new instance
 > {
   declare id: CreationOptional<number>; // SERIAL → autoincrement (
-  declare name: string;                                  
-  declare lastName: string;                              
+  declare name: string;                            
   declare email: string; // UNIQUE NOT NULL
-  declare passwordHash: string;                          
-  declare phone: string | null;  // Nullable
-  declare address: string | null; // Nullable
-  declare role: CreationOptional<string>; // DEFAULT 'user' 
+  declare role: CreationOptional<string>; // DEFAULT 'cliente' 
   declare createdAt: CreationOptional<Date>;  // Map created_at
-  declare updatedAt: CreationOptional<Date>;  // Map updated_at
 }
 
 // Intitialization: define table and columns
@@ -29,12 +24,7 @@ User.init(
     name: {
       type: DataTypes.STRING(100),                       // VARCHAR(100)
       allowNull: false,                                  // NOT NULL
-      field: 'name',                                     // Name of column in DB
-    },
-    lastName: {
-      type: DataTypes.STRING(100),                       // VARCHAR(100)
-      allowNull: false,                                  // NOT NULL
-      field: 'last_name',                                // Map camelCase → snake_case
+      field: 'nombre',                                   // Name of column in DB
     },
     email: {
       type: DataTypes.STRING(150),                       // VARCHAR(150)
@@ -43,41 +33,21 @@ User.init(
       field: 'email',                                    // Name of column in DB
       validate: { isEmail: true },                       
     },
-    passwordHash: {
-      type: DataTypes.TEXT,                              // TEXT
-      allowNull: false,                                  // NOT NULL
-      field: 'password_hash',                            // Name of column in DB
-    },
-    phone: {
-      type: DataTypes.STRING(20),                        // VARCHAR(20)
-      allowNull: true,                                   // Nullable
-      field: 'phone',                                    // Name of column in DB
-    },
-    address: {
-      type: DataTypes.TEXT,                              // TEXT
-      allowNull: true,                                   // Nullable
-      field: 'address',                                  // Name of column in DB
-    },
     role: {
       type: DataTypes.STRING(20),                        // VARCHAR(20)
       allowNull: false,                                  // Not null because there is a DEFAULT
-      defaultValue: 'user',                              // DEFAULT 'user'
-      field: 'role',                                     // Name of column in DB
+      defaultValue: 'cliente',                           // DEFAULT 'user'
+      field: 'rol',                                      // Name of column in DB
     },
     createdAt: {
       type: DataTypes.DATE,                              // TIMESTAMP
       allowNull: false,                                  // NOT NULL (tiene DEFAULT en SQL)
       field: 'created_at',                               // Name of column in DB
     },
-    updatedAt: {
-      type: DataTypes.DATE,                              // TIMESTAMP
-      allowNull: false,                                  // NOT NULL (DEFAULT NOW())
-      field: 'updated_at',                               // Name of column in DB
-    },
   },
   {
     sequelize,                                           
-    tableName: 'users',                                  // Name of table in DB
+    tableName: 'usuarios',                               // Name of table in DB
     timestamps: true,                                    // Activates createdAt/updatedAt 
     underscored: true,                                   // snake_case in FK
     freezeTableName: true,                               // Avoid plural table names

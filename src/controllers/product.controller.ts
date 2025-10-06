@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express'       
-import { createBook, listBooks, getBookById, updateBook, deleteBook } from '../services/book.service.ts'
+import { createBook, listBooks, getBookById, updateBook, deleteBook } from '../services/products.service.ts'
 import { log } from 'console';
 
 // Controller to handle book creation
