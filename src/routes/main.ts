@@ -1,14 +1,13 @@
-import bookRouter from "./products.ts";
-import planRouter from "./orders.ts";
-import userRouter from "./users.ts";
+import productRouter from './products.ts'
+import orderRouter from './orders.ts'
+import userRouter from './users.ts'
 
+import { Router } from 'express'
 
-import { Router } from "express";
+const router = Router()
 
-const router = Router();
+router.use('/users', userRouter)
+router.use('/products', productRouter)
+router.use('/orders', orderRouter)
 
-router.use('/users', userRouter);
-router.use('/products', bookRouter);
-router.use('/orders', planRouter);
-
-export default router;
+export default router

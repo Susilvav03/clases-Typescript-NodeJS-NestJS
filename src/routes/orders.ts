@@ -1,23 +1,23 @@
-import { Router } from 'express';                             
-import { createPlanController, listPlansController, getPlanController, updatePlanController, deletePlanController, listExpensivePlansController, listBasicPlansController } from '../controllers/order.controller.ts';                      
+import { Router } from 'express'
+import { createOrderController, listOrdersController, getOrderController, updateOrderController, deleteOrderController, filterOrdersByEstadoController, listOrdersAfterDateController, getOrderTotalController } from '../controllers/orders.controller.ts'
 
-import { requireCreatePlanBody } from '../middlewares/require-create-plan.middleware.ts';      
+const orderRouter = Router()
 
-const planRouter = Router();                                      
+// List all Orders
+orderRouter.get('/', listOrdersController)
+// Filter orders by estado (Op.in)
+orderRouter.get('/filter/estado', filterOrdersByEstadoController) // ?in=pendiente,preparando
+// List orders after a specific date (Op.gt)
+orderRouter.get('/filter/after', listOrdersAfterDateController)   // ?date=YYYY-MM-DD
+// Get Order total by ID
+orderRouter.get('/:id/total', getOrderTotalController)
+// Get Order by ID
+orderRouter.get('/:id', getOrderController)
+// Create a new Order
+orderRouter.post('/', createOrderController)
+// Update Order by ID
+orderRouter.put('/:id', updateOrderController)
+// Delete Order by ID
+orderRouter.delete('/:id', deleteOrderController)
 
-// List all Plans
-planRouter.get('/', listPlansController); 
-// List expensive Plans
-planRouter.get('/expensive', listExpensivePlansController);  
-// List basic Plans
-planRouter.get('/basic', listBasicPlansController);       
-// Get Plan by ID
-planRouter.get('/:id', getPlanController);          
-// Create a new Plan with validation and uniqueness check              
-planRouter.post('/', requireCreatePlanBody, createPlanController);
-// Update Plan by ID with uniqueness check
-planRouter.put('/:id', updatePlanController)
-// Delete Plan by ID
-planRouter.delete('/:id', deletePlanController);          
-
-export default planRouter;                                        
+export default orderRouter

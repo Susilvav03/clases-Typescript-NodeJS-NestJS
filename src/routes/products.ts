@@ -1,18 +1,19 @@
-import { Router } from 'express';                             
-import { createBookController, listBooksController, getBookController, updateBookController, deleteBookController } from '../controllers/product.controller.ts';                      
-import { requireCreateBookBody } from '../middlewares/require-create-book.middleware.ts';
+import { Router } from 'express'
+import { createProductController, listProductsController, getProductController, updateProductController, deleteProductController, searchProductsByCategoryController } from '../controllers/products.controller.ts'
 
-const bookRouter = Router();                                      
+const productRouter = Router()
 
-// List all Books
-bookRouter.get('/', listBooksController);       
-// Get Book by ID
-bookRouter.get('/:id', getBookController);          
-// Create a new Book with validation and uniqueness check              
-bookRouter.post('/', requireCreateBookBody, createBookController);
-// Update Book by ID with uniqueness check
-bookRouter.put('/:id', updateBookController)
-// Delete Book by ID
-bookRouter.delete('/:id', deleteBookController);                  
+// List all Products
+productRouter.get('/', listProductsController)
+// Search products by category (Op.like)
+productRouter.get('/search', searchProductsByCategoryController) // ?categoria=...
+// Get Product by ID
+productRouter.get('/:id', getProductController)
+// Create a new Product
+productRouter.post('/', createProductController)
+// Update Product by ID
+productRouter.put('/:id', updateProductController)
+// Delete Product by ID
+productRouter.delete('/:id', deleteProductController)
 
-export default bookRouter;                                        
+export default productRouter
