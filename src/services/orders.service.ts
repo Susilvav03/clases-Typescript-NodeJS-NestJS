@@ -12,14 +12,17 @@ export type CreateOrderData = {
 
 export type UpdateOrderData = Partial<CreateOrderData>
 
+// List all, ordered by id ascending
 export function listOrders() {
   return Order.findAll({ order: [['id', 'ASC']] })
 }
 
+// Search by primary key (id)
 export function getOrderById(id: number) {
   return Order.findByPk(id)
 }
 
+// Create a new Order with its items (transaction)
 export async function createOrder(data: CreateOrderData) {
   return sequelize.transaction(async (t: Transaction) => {
     const order = await Order.create(
@@ -45,6 +48,7 @@ export async function createOrder(data: CreateOrderData) {
   })
 }
 
+// Update only fields present in 'data'
 export async function updateOrder(id: number, data: UpdateOrderData) {
   const row = await Order.findByPk(id)
   if (!row) return null
@@ -54,6 +58,7 @@ export async function updateOrder(id: number, data: UpdateOrderData) {
   return row
 }
 
+// Delete by primary key (id)
 export async function deleteOrder(id: number) {
   const row = await Order.findByPk(id)
   if (!row) return false
@@ -76,7 +81,6 @@ export function listOrdersAfterDate(date: Date | string) {
     order: [['fecha', 'ASC']],
   })
 }
-
 
 // Calcular total de un pedido (SUM(cantidad * precio)) 
 export async function getOrderTotal(pedidoId: number) {
