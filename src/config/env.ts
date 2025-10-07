@@ -7,4 +7,6 @@ export const ENV = {
   DB_USER: process.env.DB_USER!,
   DB_PASSWORD: process.env.DB_PASSWORD!,
   DB_NAME: process.env.DB_NAME!,
+  NODE_ENV: process.env.NODE_ENV ?? 'development',
+  CORS_WHITELIST: process.env.CORS_WHITELIST!,
 };
